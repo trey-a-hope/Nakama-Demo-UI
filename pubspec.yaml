@@ -1,16 +1,20 @@
 name: nakama_ui
 description: "A new Flutter project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.3 <4.0.0'
+  sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  nakama: ^0.1.6
   cupertino_icons: ^1.0.6
+  flutter_riverpod: ^2.3.6
+  intl: ^0.19.0
+  jwt_decoder: ^2.0.1
+  nakama: ^0.1.6
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
