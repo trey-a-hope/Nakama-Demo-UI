@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:nakama/nakama.dart';
-import 'package:nakama_ui/models/session_hive_model.dart';
+import 'package:nakama_ui/domain/models/session_hive_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HiveSessionService {

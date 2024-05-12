@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nakama_ui/views/authenticated_view.dart';
-import 'package:nakama_ui/providers/providers.dart';
-import 'package:nakama_ui/views/unauthenticated_view.dart';
+import 'package:nakama_ui/presentation/views/authenticated_view.dart';
+import 'package:nakama_ui/domain/providers/providers.dart';
+import 'package:nakama_ui/presentation/views/unauthenticated_view.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});

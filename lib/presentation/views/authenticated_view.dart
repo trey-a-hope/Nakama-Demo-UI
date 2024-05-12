@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:nakama_ui/providers/providers.dart';
+import 'package:nakama_ui/domain/providers/providers.dart';
 
 class AuthenticatedView extends ConsumerWidget {
   const AuthenticatedView({super.key});
@@ -20,9 +20,18 @@ class AuthenticatedView extends ConsumerWidget {
       children: [
         Expanded(
           child: leaderBoardRecords.when(
-            data: (records) {
-              return Text('Records: ${records.length}');
-            },
+            data: (records) => ListView.builder(
+              itemCount: records.length,
+              itemBuilder: (context, index) {
+                final record = records[index];
+                return ListTile(
+                  leading: Text('${index + 1}'),
+                  title: Text(record.username!),
+                  subtitle:
+                      Text('Score: ${record.score}\nUID: ${record.ownerId}'),
+                );
+              },
+            ),
             error: (err, stack) => Text(
               err.toString(),
             ),
@@ -31,9 +40,9 @@ class AuthenticatedView extends ConsumerWidget {
         ),
         ListTile(
           leading: const Icon(Icons.person),
-          title: Text('Email: ${sessionData.email}'),
+          title: Text('Username: ${sessionData.username}'),
           subtitle: Text(
-            'UID: ${sessionData.uid}\nToken Expires: ${DateFormat.jm().format(sessionData.expiresAt)}',
+            'Email: ${sessionData.email}\nToken Expires: ${DateFormat.jm().format(sessionData.expiresAt)}',
           ),
         ),
         Padding(

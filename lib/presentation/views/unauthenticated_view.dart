@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nakama_ui/providers/providers.dart';
+import 'package:nakama_ui/domain/providers/providers.dart';
 
 class UnauthenticatedView extends ConsumerWidget {
   final _emailController = TextEditingController();

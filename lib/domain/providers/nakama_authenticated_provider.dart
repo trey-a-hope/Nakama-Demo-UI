@@ -2,16 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nakama/nakama.dart';
-import 'package:nakama_ui/service/hive_session_service.dart';
+import 'package:nakama_ui/data/constants/globals.dart';
+import 'package:nakama_ui/data/service/hive_session_service.dart';
 
 class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
   final _hiveSessionService = HiveSessionService();
-
-  final _inOneHour = DateTime.now().add(
-    const Duration(
-      hours: 1,
-    ),
-  );
 
   @override
   FutureOr<bool> build() async {
@@ -30,7 +25,7 @@ class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
     }
 
     // Check whether a session has expired or is close to expiry.
-    if (session.isExpired || session.hasExpired(_inOneHour)) {
+    if (session.isExpired || session.hasExpired(Globals.inOneHour)) {
       try {
         // Attempt to refresh the existing session.
         session = await getNakamaClient().sessionRefresh(session: session);
