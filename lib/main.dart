@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nakama_ui/home_page.dart';
+import 'package:nakama_ui/service/hive_session_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await HiveSessionService.init();
+
   runApp(const MyApp());
 }
 

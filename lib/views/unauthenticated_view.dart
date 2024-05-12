@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nakama_ui/providers.dart';
+import 'package:nakama_ui/providers/providers.dart';
 
 class UnauthenticatedView extends ConsumerWidget {
   final _emailController = TextEditingController();
@@ -41,7 +41,7 @@ class UnauthenticatedView extends ConsumerWidget {
                     String password = _passwordController.text;
 
                     ref
-                        .read(Providers.nakamaSessionProvider.notifier)
+                        .read(Providers.nakamaAuthenticatedProvider.notifier)
                         .authenticateEmail(
                           email: email,
                           password: password,
