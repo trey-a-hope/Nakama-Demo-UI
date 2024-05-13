@@ -13,14 +13,17 @@ class NakamaSessionDataProvider extends AsyncNotifier<SessionData?> {
   FutureOr<SessionData?> build() async {
     ref.watch(Providers.nakamaAuthenticatedProvider);
 
+    // Fetch the current session.
     final session = await _hiveSessionService.sessionActive();
 
     if (session == null) {
       return null;
     }
 
+    // Decode the session token.
     final res = JwtDecoder.decode(session.token);
 
+    // Return session data from decoded token.
     return SessionData(
       uid: res['uid'],
       username: res['usn'],

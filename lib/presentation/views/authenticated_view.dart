@@ -17,6 +17,13 @@ class AuthenticatedView extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Leaderboard',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ),
         Expanded(
           child: leaderBoardRecords.when(
             data: (records) => ListView.builder(
@@ -24,7 +31,7 @@ class AuthenticatedView extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final record = records[index];
                 return ListTile(
-                  leading: Text('${index + 1}'),
+                  leading: Text('${record.rank!}'),
                   title: Text(record.username!),
                   subtitle: Text(
                     'Score: ${record.score}\nUID: ${record.ownerId}',
@@ -36,6 +43,14 @@ class AuthenticatedView extends ConsumerWidget {
               err.toString(),
             ),
             loading: () => const CircularProgressIndicator(),
+          ),
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            'Your Information',
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
         ),
         sessionData.when(
@@ -59,14 +74,28 @@ class AuthenticatedView extends ConsumerWidget {
           ),
           loading: () => const CircularProgressIndicator(),
         ),
+        const Divider(),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: () => ref
-                .read(Providers.nakamaLeaderboardProvider.notifier)
-                .writeLeaderboardRecord(
-                  score: Random().nextInt(100),
+            onPressed: () {
+              // Create random score.
+              final randomScore = Random().nextInt(100);
+
+              // Display potential score set.
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Potential score of $randomScore sent...'),
                 ),
+              );
+
+              // Submit score to leaderboard.
+              ref
+                  .read(Providers.nakamaLeaderboardProvider.notifier)
+                  .writeLeaderboardRecord(
+                    score: randomScore,
+                  );
+            },
             child: const Text('Write Leaderboard Record'),
           ),
         ),

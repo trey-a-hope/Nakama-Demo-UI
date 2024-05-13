@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'session_hive_model.g.dart';
 
+/// Model used to store session data in Hive.
 @HiveType(typeId: 0)
 class SessionHiveModel extends HiveObject {
   @HiveField(0)
@@ -36,4 +37,4 @@ class SessionHiveModel extends HiveObject {
   });
 }
 
-//flutter packages pub run build_runner build 
+// flutter packages pub run build_runner build 

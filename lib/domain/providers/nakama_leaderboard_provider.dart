@@ -13,34 +13,37 @@ class NakamaLeaderboardProvider extends AsyncNotifier<List<LeaderboardRecord>> {
 
   @override
   FutureOr<List<LeaderboardRecord>> build() async {
+    // Fetch the current session.
     final session = await _hiveSessionService.sessionActive();
 
+    // If session is null, return empty list.
     if (session == null) {
       return [];
     }
 
     // Get leaderboard records.
-    LeaderboardRecordList leaderboardRecordList =
+    final leaderboardRecordList =
         await getNakamaClient().listLeaderboardRecords(
       session: session,
       leaderboardName: _leaderboardName,
     );
 
-    List<LeaderboardRecord> leaderboardRecords = leaderboardRecordList.records;
-
-    return leaderboardRecords;
+    // Return leaderboard records from list.
+    return leaderboardRecordList.records;
   }
 
+  /// Write leaderboard record.
   Future writeLeaderboardRecord({required int score}) async {
+    // Fetch the current session.
     final session = await _hiveSessionService.sessionActive();
 
+    // If session is null, return.
     if (session == null) {
       debugPrint('Session is null, can\'t write record.');
       return;
     }
 
-    debugPrint('Potential score of $score set for ${session.userId}');
-
+    // Write leaderboard record.
     await getNakamaClient().writeLeaderboardRecord(
       session: session,
       leaderboardName: _leaderboardName,
@@ -54,8 +57,7 @@ class NakamaLeaderboardProvider extends AsyncNotifier<List<LeaderboardRecord>> {
       leaderboardName: _leaderboardName,
     );
 
-    final leaderboardRecords = leaderboardRecordList.records;
-
-    state = AsyncData(leaderboardRecords);
+    // Update state with new records.
+    state = AsyncData(leaderboardRecordList.records);
   }
 }

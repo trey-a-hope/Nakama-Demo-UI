@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nakama/nakama.dart';
 import 'package:nakama_ui/data/service/hive_session_service.dart';
 
+/// Provider used to check if the user is authenticated.
 class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
   /// HiveSessionService instance.
   final _hiveSessionService = HiveSessionService();
@@ -18,6 +19,7 @@ class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
       httpPort: 7350,
     );
 
+    // Fetch the current session.
     final session = await _hiveSessionService.sessionActive();
 
     return session != null;
@@ -57,7 +59,6 @@ class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
         throw Exception('No session found.');
       }
 
-
       TODO: Currently cannot logout of session via the Nakama Client...
       
       await getNakamaClient().sessionLogout(session: session);
@@ -70,7 +71,7 @@ class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
     */
 
     // Clear session from local storage.
-    _hiveSessionService.clearSession();
+    await _hiveSessionService.clearSession();
 
     // Set authenticated state to false.
     state = const AsyncData(false);

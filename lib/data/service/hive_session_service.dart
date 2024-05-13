@@ -24,12 +24,13 @@ class HiveSessionService {
   /// Returns a session if active, otherwise returns null.
   Future<Session?> sessionActive() async {
     // Check cache for existing session.
-    var session = _getSession();
+    final sessionHive = _box.get(_boxName);
 
-    // If no session found, return false.
-    if (session == null) {
+    if (sessionHive == null) {
       return null;
     }
+
+    var session = convertHiveToSession(sessionHive);
 
     // Check whether a session has expired or is close to expiry.
     if (session.isExpired || session.hasExpired(Globals.inOneHour)) {
@@ -53,19 +54,8 @@ class HiveSessionService {
     _box.put(_boxName, convertSessionToHive(session));
   }
 
-  /// Fetches a session from cache.
-  Session? _getSession() {
-    final sessionHive = _box.get(_boxName);
-
-    if (sessionHive == null) {
-      return null;
-    }
-
-    return convertHiveToSession(sessionHive);
-  }
-
   /// Clears the session cache.
-  void clearSession() => _box.clear();
+  Future clearSession() async => await _box.clear();
 
   /// Converts cache session data to a Nakama session.
   static Session convertHiveToSession(SessionHiveModel session) => Session(

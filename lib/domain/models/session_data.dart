@@ -1,4 +1,4 @@
-/// Data class to hold session data.
+/// Hold user information related to their session.
 class SessionData {
   final String uid;
   final String username;
