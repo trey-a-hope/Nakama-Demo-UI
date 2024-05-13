@@ -5,14 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:nakama_ui/domain/providers/providers.dart';
 
+/// Display leaderboard and user info when authenticated.
 class AuthenticatedView extends ConsumerWidget {
   const AuthenticatedView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Safe to assume that session data is available at this point.
-    final sessionData = ref.read(Providers.nakamaSessionDataProvider).value!;
-
+    final sessionData = ref.watch(Providers.nakamaSessionDataProvider);
     final leaderBoardRecords = ref.watch(Providers.nakamaLeaderboardProvider);
 
     return Column(
@@ -27,8 +26,9 @@ class AuthenticatedView extends ConsumerWidget {
                 return ListTile(
                   leading: Text('${index + 1}'),
                   title: Text(record.username!),
-                  subtitle:
-                      Text('Score: ${record.score}\nUID: ${record.ownerId}'),
+                  subtitle: Text(
+                    'Score: ${record.score}\nUID: ${record.ownerId}',
+                  ),
                 );
               },
             ),
@@ -38,12 +38,26 @@ class AuthenticatedView extends ConsumerWidget {
             loading: () => const CircularProgressIndicator(),
           ),
         ),
-        ListTile(
-          leading: const Icon(Icons.person),
-          title: Text('Username: ${sessionData.username}'),
-          subtitle: Text(
-            'Email: ${sessionData.email}\nToken Expires: ${DateFormat.jm().format(sessionData.expiresAt)}',
+        sessionData.when(
+          data: (data) => data == null
+              ? const ListTile(
+                  leading: Icon(Icons.error),
+                  title: Text('Error'),
+                  subtitle: Text('Could not load user information.'),
+                )
+              : ListTile(
+                  leading: const Icon(Icons.person),
+                  title: Text('Username: ${data.username}'),
+                  subtitle: Text(
+                    'Email: ${data.email}\nToken Expires: ${DateFormat.jm().format(data.expiresAt)}',
+                  ),
+                ),
+          error: (err, stack) => Center(
+            child: Text(
+              err.toString(),
+            ),
           ),
+          loading: () => const CircularProgressIndicator(),
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),

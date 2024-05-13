@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nakama/nakama.dart';
-import 'package:nakama_ui/data/constants/globals.dart';
 import 'package:nakama_ui/data/service/hive_session_service.dart';
 
 class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
+  /// HiveSessionService instance.
   final _hiveSessionService = HiveSessionService();
 
   @override
@@ -18,29 +18,12 @@ class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
       httpPort: 7350,
     );
 
-    var session = _hiveSessionService.getSession();
+    final session = await _hiveSessionService.sessionActive();
 
-    if (session == null) {
-      return false;
-    }
-
-    // Check whether a session has expired or is close to expiry.
-    if (session.isExpired || session.hasExpired(Globals.inOneHour)) {
-      try {
-        // Attempt to refresh the existing session.
-        session = await getNakamaClient().sessionRefresh(session: session);
-
-        // Update cached session with the refreshed session.
-        _hiveSessionService.putSession(session: session);
-      } catch (e) {
-        // Couldn't refresh the session so reauthenticate.
-        return false;
-      }
-    }
-
-    return true;
+    return session != null;
   }
 
+  /// Authenticate with email and password.
   Future authenticateEmail({
     required String email,
     required String password,
@@ -58,20 +41,23 @@ class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
     // Save session token to local storage.
     _hiveSessionService.putSession(session: session);
 
+    // Print Nakama user UID to console.
     debugPrint('Nakama UID: ${session.userId}');
 
     // Set authenticated state to true.
     state = const AsyncData(true);
   }
 
+  /// Logout of the current session.
   Future logout() async {
-    var session = _hiveSessionService.getSession();
-
-    if (session == null) {
-      throw Exception('No session found.');
-    }
-
     /*
+      var session = _hiveSessionService.getSession();
+
+      if (session == null) {
+        throw Exception('No session found.');
+      }
+
+
       TODO: Currently cannot logout of session via the Nakama Client...
       
       await getNakamaClient().sessionLogout(session: session);
@@ -83,8 +69,10 @@ class NakamaAuthenticatedProvider extends AsyncNotifier<bool> {
       For now, just clear the session from local storage.
     */
 
+    // Clear session from local storage.
     _hiveSessionService.clearSession();
 
+    // Set authenticated state to false.
     state = const AsyncData(false);
   }
 }

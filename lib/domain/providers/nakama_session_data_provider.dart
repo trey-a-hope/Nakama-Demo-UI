@@ -6,13 +6,14 @@ import 'package:nakama_ui/data/service/hive_session_service.dart';
 import 'package:nakama_ui/domain/providers/providers.dart';
 
 class NakamaSessionDataProvider extends AsyncNotifier<SessionData?> {
+  /// HiveSessionService instance.
   final _hiveSessionService = HiveSessionService();
 
   @override
-  FutureOr<SessionData?> build() {
+  FutureOr<SessionData?> build() async {
     ref.watch(Providers.nakamaAuthenticatedProvider);
 
-    final session = _hiveSessionService.getSession();
+    final session = await _hiveSessionService.sessionActive();
 
     if (session == null) {
       return null;
